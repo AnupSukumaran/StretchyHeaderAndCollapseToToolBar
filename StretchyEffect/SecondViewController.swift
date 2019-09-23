@@ -17,6 +17,7 @@ class SecondViewController: UIViewController {
     
     var headerViewMaxHeight: CGFloat!
     let headerViewMinHeight: CGFloat = 44 + UIApplication.shared.statusBarFrame.height
+    var lastVelocityYSign = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,34 +28,32 @@ class SecondViewController: UIViewController {
 }
 
 extension SecondViewController: UIScrollViewDelegate {
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         //first take the scrollView's changing y axis when scrolled
         let y = scrollView.contentOffset.y
         let offset = headerViewMaxHeight - (y + headerViewMaxHeight) // this is done get the exact top scrolView inset value to get the right offset
-        
+
         if offset < 0 {
             // here header shrinks and the offset value becomes negative, when scroll bar goes down to see the BOTTOM
             print("negative")
             //headerViewMinHeight is 88
             if headerViewHeight.constant >= headerViewMinHeight {
-                
+
                 let height = headerViewHeight.constant + offset
                 let newVal = max(height, headerViewMinHeight) // takes the maximum value above 88
                 print("Height = \(height)")
                 //scrollView.contentInset.top = height
                 //Adds the constraints and gave the animation
                 headerViewHeight.constant = newVal
-                
+
                 UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 5, options: .curveEaseInOut, animations: {
                     self.view.layoutIfNeeded()
                 }, completion: nil)
-                
-//                UIView.animate(withDuration: 0.5) {
-//                    self.view.layoutIfNeeded()
-//                }
-      
+
+
             }
-            
+
 
         } else {
             // here header expands and the offset value becomes positive, when scroll bar goes Up to see the TOP
@@ -63,16 +62,56 @@ extension SecondViewController: UIScrollViewDelegate {
             if headerViewHeight.constant <= headerViewMaxHeight {
                 let height = headerViewHeight.constant + offset
                 let newVal = min(headerViewMaxHeight, height) // takes the min value below 295
-                
+
                 //Adds the constraints and gave the animation
                 headerViewHeight.constant = newVal
                 UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 5, options: .curveEaseInOut, animations: {
                     self.view.layoutIfNeeded()
                 }, completion: nil)
-//                UIView.animate(withDuration: 0.5) {
-//                    self.view.layoutIfNeeded()
-//                }
+
             }
         }
+        
+        
+//        let currentVelocityY =  scrollView.panGestureRecognizer.velocity(in: scrollView.superview).y
+//        let currentVelocityYSign = Int(currentVelocityY).signum()
+//        
+//        if currentVelocityYSign != lastVelocityYSign && currentVelocityYSign != 0 {
+//               lastVelocityYSign = currentVelocityYSign
+//        }
+//        
+//        if lastVelocityYSign < 0 {
+//           print("JKLLLL - Up")
+//            
+//            if headerViewHeight.constant >= headerViewMinHeight {
+//                      
+//                  let height = headerViewHeight.constant + offset
+//                  let newVal = max(height, headerViewMinHeight) // takes the maximum value above 88
+//                  print("Height = \(height)")
+//                  //scrollView.contentInset.top = height
+//                  //Adds the constraints and gave the animation
+//                  headerViewHeight.constant = newVal
+//                  
+//                  UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 5, options: .curveEaseInOut, animations: {
+//                      self.view.layoutIfNeeded()
+//                  }, completion: nil)
+//                      
+//            }
+//         
+//        } else if lastVelocityYSign > 0 {
+//            print("JKLLLL - Down")
+//            
+//            if headerViewHeight.constant <= headerViewMaxHeight {
+//                let height = headerViewHeight.constant + offset
+//                let newVal = min(headerViewMaxHeight, height) // takes the min value below 295
+//                
+//                //Adds the constraints and gave the animation
+//                headerViewHeight.constant = newVal
+//                UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 5, options: .curveEaseInOut, animations: {
+//                    self.view.layoutIfNeeded()
+//                }, completion: nil)
+//
+//            }
+//        }
     }
 }
