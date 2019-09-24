@@ -55,6 +55,14 @@ class SecondViewController: UIViewController {
         shapeLayer.rasterizationScale = UIScreen.main.scale
         shapeLayer.path = path.cgPath
         shapeLayer.fillColor = #colorLiteral(red: 0.3647058904, green: 0.06666667014, blue: 0.9686274529, alpha: 1)
+        
+//        let pathAnimation = CABasicAnimation(keyPath: "path")
+//        pathAnimation.duration = 1.5
+////        pathAnimation.fromValue = prevPath
+////        pathAnimation.toValue = path
+//
+//        shapeLayer.add(pathAnimation, forKey: "path")
+        
         headerView.layer.addSublayer(shapeLayer)
     }
     
