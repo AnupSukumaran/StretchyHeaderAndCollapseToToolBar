@@ -15,7 +15,7 @@ class SecondViewController: UIViewController {
     @IBOutlet weak var scrollView: UIScrollView!
     
     var headerViewMaxHeight: CGFloat = 0
-    let headerViewMinHeight: CGFloat = 44 + UIApplication.shared.statusBarFrame.height
+    let headerViewMinHeight: CGFloat = 88
     var lastVelocityYSign = 0
     let arcHeight: CGFloat = 100.0
     
@@ -84,7 +84,7 @@ extension SecondViewController: UIScrollViewDelegate {
         let arcThreshold = headerViewMaxHeight / arcHeight
         let minArchThresHold = headerViewMinHeight / arcThreshold
 
-        print("arcHeight = \((headerView.frame.height/arcThreshold) / 2 )")
+        print("arcHeight = \((headerView.frame.height/arcThreshold) )")
         
        // print("offset = \(scrollView.contentOffset.y)")
         let y = (headerViewMaxHeight - (scrollView.contentOffset.y + headerViewMaxHeight))
@@ -182,7 +182,7 @@ extension SecondViewController: UIScrollViewDelegate {
          //if headerViewHeight.constant < headerViewMaxHeight {
         if y > 0 {
             print("YDas - \(y)")
-            let height = headerViewMinHeight +  y
+            let height = headerViewMinHeight +  (y)
            print("KKK -> \(height) = \(headerViewHeight.constant) + \(y)")
             let newVal = min(headerViewMaxHeight, height) // takes the min value below 295
             
@@ -199,4 +199,8 @@ extension SecondViewController: UIScrollViewDelegate {
              
        //  }
      }
+    
+//    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+//        print("Ended Scrolling ")
+//    }
 }
