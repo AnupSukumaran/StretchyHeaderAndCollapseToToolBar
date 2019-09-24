@@ -87,8 +87,8 @@
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Nbi-SH-8X8">
                                 <rect key="frame" x="0.0" y="132" width="414" height="730"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uac-Wr-XFf">
-                                        <rect key="frame" x="0.0" y="330" width="414" height="926"/>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uac-Wr-XFf">
+                                        <rect key="frame" x="0.0" y="-88" width="414" height="1344"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="+Ve" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W34-Nk-Rgd">
                                                 <rect key="frame" x="8" y="1286" width="398" height="50"/>

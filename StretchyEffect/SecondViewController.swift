@@ -181,8 +181,8 @@ extension SecondViewController: UIScrollViewDelegate {
          //headerViewMaxHeight is 295
          //if headerViewHeight.constant < headerViewMaxHeight {
         if y > 0 {
-            
-            let height = headerViewHeight.constant +  y
+            print("YDas - \(y)")
+            let height = headerViewMinHeight +  y
            print("KKK -> \(height) = \(headerViewHeight.constant) + \(y)")
             let newVal = min(headerViewMaxHeight, height) // takes the min value below 295
             
