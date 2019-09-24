@@ -14,9 +14,10 @@ class SecondViewController: UIViewController {
     @IBOutlet weak var headerViewHeight: NSLayoutConstraint!
     @IBOutlet weak var scrollView: UIScrollView!
     
-    var headerViewMaxHeight: CGFloat!
+    var headerViewMaxHeight: CGFloat = 0
     let headerViewMinHeight: CGFloat = 44 + UIApplication.shared.statusBarFrame.height
     var lastVelocityYSign = 0
+    let arcHeight: CGFloat = 100.0
     
     var path: UIBezierPath!
     var shapeLayer = CAShapeLayer()
@@ -26,7 +27,7 @@ class SecondViewController: UIViewController {
     
         headerViewMaxHeight = headerViewHeight.constant
         scrollView.contentInset = UIEdgeInsets(top: headerViewMaxHeight, left: 0, bottom: 0, right: 0)
-         createRectangle(arcHeight: 25.0)
+        createRectangle(arcHeight: arcHeight)
     }
     
     func createRectangle(arcHeight: CGFloat) {
@@ -37,7 +38,8 @@ class SecondViewController: UIViewController {
     
         let geo = archHeightRadiusCreator(recWidth: headerView.frame.size.width, arcHeight: arcHeight)
         let xAxis = headerView.frame.size.width/2
-        let yAxis = headerView.frame.size.height - geo.radius - 20
+       
+        let yAxis = headerView.frame.size.height - geo.radius
 
         path.addArc(withCenter: CGPoint(x: xAxis, y: yAxis), radius:  geo.radius, startAngle: geo.startAngle.degreesToRadians, endAngle: geo.endAngle.degreesToRadians, clockwise: false)
 
@@ -75,46 +77,126 @@ class SecondViewController: UIViewController {
 
 extension SecondViewController: UIScrollViewDelegate {
     
+ 
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
-        let y = headerViewMaxHeight - (scrollView.contentOffset.y + headerViewMaxHeight)
-       
-        print("@@@@ = \(y)")
-        let newMax = max(y, headerViewMinHeight)
-        print("newMax = \(newMax)")
-        
-        let newMin = min(max(y, headerViewMinHeight), 400)
-        print("newMin = \(newMin)")
-        
-        let height = min(max(y, headerViewMinHeight), 400)
-        print("height = \(height)")
-        headerViewHeight.constant = height
-        
-        let currentVelocityY =  scrollView.panGestureRecognizer.velocity(in: scrollView.superview).y
-               let currentVelocityYSign = Int(currentVelocityY).signum()
-               
-               if currentVelocityYSign != lastVelocityYSign && currentVelocityYSign != 0 {
-                      lastVelocityYSign = currentVelocityYSign
-               }
-               
-               if lastVelocityYSign < 0 {
-                  
-                   if (headerView.frame.height/12) <= 8 {
-                       createRectangle(arcHeight: 1)
-                   } else {
-                       createRectangle(arcHeight: headerView.frame.height/12)
-                   }
-                   
-                
-               } else if lastVelocityYSign > 0 {
+        let arcThreshold = headerViewMaxHeight / arcHeight
+        let minArchThresHold = headerViewMinHeight / arcThreshold
 
-                    if (headerView.frame.height/12) >= 8 {
-                       createRectangle(arcHeight: (headerView.frame.height/12))
-                    } else {
-                       createRectangle(arcHeight: 1)
-                    }
-                   
-               }
+        print("arcHeight = \((headerView.frame.height/arcThreshold) / 2 )")
+        
+       // print("offset = \(scrollView.contentOffset.y)")
+        let y = (headerViewMaxHeight - (scrollView.contentOffset.y + headerViewMaxHeight))
+        
+//        let height = min(max(y, headerViewMinHeight), 400)
+//        print("height = \(height)")
+//        headerViewHeight.constant = height
+//
+//
+//
+        let currentVelocityY =  scrollView.panGestureRecognizer.velocity(in: scrollView.superview).y
+        let currentVelocityYSign = Int(currentVelocityY).signum()
+
+        if currentVelocityYSign != lastVelocityYSign && currentVelocityYSign != 0 {
+            lastVelocityYSign = currentVelocityYSign
+        }
+
+
+
+       if lastVelocityYSign < 0 {
+            arcShrinks(y, arcThreshold, minArchThresHold)
+//           if (headerView.frame.height/arcThreshold) <= minArchThresHold {
+//               createRectangle(arcHeight: 1)
+//           } else {
+//               createRectangle(arcHeight: (headerView.frame.height/arcThreshold) / 2)
+//           }
+
+
+       } else if lastVelocityYSign > 0 {
+            arcExpands(y, arcThreshold, minArchThresHold)
+//            if (headerView.frame.height/arcThreshold) >= minArchThresHold {
+//                createRectangle(arcHeight: (headerView.frame.height/arcThreshold) / 2)
+//            } else {
+//               createRectangle(arcHeight: 1)
+//            }
+
+       }
+        print("Offset -> y = \(y)")
+//        if y > 0 {
+//            // here header shrinks and the offset value becomes negative, when scroll bar goes down to see the BOTTOM
+//
+//
+//
+//            arcShrinks(y, arcThreshold, minArchThresHold)
+//
+//        } else {
+//            // here header expands and the offset value becomes positive, when scroll bar goes Up to see the TOP
+//
+//            arcExpands(y, arcThreshold, minArchThresHold)
+//        }
+         
       
     }
+    
+    
+    fileprivate func arcShrinks(_ y: (CGFloat), _ arcThreshold: CGFloat, _ minArchThresHold: CGFloat) {
+            
+         print("123Up - \(headerViewHeight.constant)")
+        
+        //headerViewMinHeight is 88
+        
+         if headerViewHeight.constant >= headerViewMinHeight {
+            print("Compare - \(headerViewHeight.constant) >= \(headerViewMinHeight) -> \(headerViewHeight.constant >= headerViewMinHeight)")
+            
+           
+//            print("Display - \(y) < \(headerViewHeight.constant) -> \(y < headerViewHeight.constant)")
+          //  if y < headerViewHeight.constant {
+                print("YDas - \(y)")
+                let height = headerViewHeight.constant - (headerViewMaxHeight - y)
+                print("KKK -> \(height) = \(headerViewHeight.constant) - \(headerViewMaxHeight - y)")
+//                 print("HHHH - \(height) = \(headerViewHeight.constant) - \(y)")
+                let newVal = max(height, headerViewMinHeight) // takes the maximum value above 88
+                print("NewHeight = \(height)")
+                 print("newVal = \(newVal)")
+
+                headerViewHeight.constant = newVal
+
+                if (headerView.frame.height/arcThreshold) <= minArchThresHold {
+                    print("ArchHeight -> \(1)")
+                    createRectangle(arcHeight: 1)
+                } else {
+                    print("ArchHeight -> \(headerView.frame.height/arcThreshold)")
+                    createRectangle(arcHeight: (headerView.frame.height/arcThreshold))
+                }
+          //  }
+
+             
+         }
+     }
+     
+     fileprivate func arcExpands(_ y: (CGFloat), _ arcThreshold: CGFloat, _ minArchThresHold: CGFloat) {
+        
+         print("123Down - \(headerViewHeight.constant)")
+         //headerViewMaxHeight is 295
+         //if headerViewHeight.constant < headerViewMaxHeight {
+        if y > 0 {
+            
+            let height = headerViewHeight.constant +  y
+           print("KKK -> \(height) = \(headerViewHeight.constant) + \(y)")
+            let newVal = min(headerViewMaxHeight, height) // takes the min value below 295
+            
+            //Adds the constraints and gave the animation
+            headerViewHeight.constant = newVal
+            
+            if (headerView.frame.height/arcThreshold) >= minArchThresHold {
+                createRectangle(arcHeight: (headerView.frame.height/arcThreshold) )
+            } else {
+                createRectangle(arcHeight: 1)
+            }
+        }
+            
+             
+       //  }
+     }
 }
